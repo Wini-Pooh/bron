@@ -452,18 +452,27 @@
                             <div class="col-md-6">
                                 <div class="form-group-enhanced">
                                     <label for="telegram_bot_username" class="form-label-enhanced">
-                                        Имя бота (username)
-                                        <span class="field-tooltip" data-tooltip="Username бота без @, например: my_salon_bot">
+                                        <i class="fab fa-telegram-plane text-primary"></i>
+                                        Имя бота в Telegram
+                                        <span class="field-tooltip" data-tooltip="Введите username вашего бота БЕЗ символа @. Например: my_salon_bot">
                                         </span>
                                     </label>
-                                    <input type="text" 
-                                           class="form-control-enhanced" 
-                                           id="telegram_bot_username" 
-                                           name="telegram_bot_username" 
-                                           value="{{ old('telegram_bot_username', $company->telegram_bot_username) }}"
-                                           placeholder="my_salon_bot">
+                                    <div class="input-group" style="flex-wrap: nowrap;">
+                                        <span class="input-group-text bg-primary text-white">@</span>
+                                        <input type="text" 
+                                               class="form-control-enhanced" 
+                                               id="telegram_bot_username" 
+                                               name="telegram_bot_username" 
+                                               value="{{ old('telegram_bot_username', $company->telegram_bot_username) }}"
+                                               placeholder="my_salon_booking_bot"
+                                               pattern="[a-zA-Z0-9_]+"
+                                               title="Только латинские буквы, цифры и подчеркивания"
+                                               required>
+                                    </div>
                                     <small class="form-text text-muted">
-                                        Username бота (заполняется автоматически при получении информации о боте)
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Обязательное поле!</strong> Введите точное имя вашего бота из @BotFather.
+                                        <br>Пример: если ваш бот @my_salon_bot, введите: <code>my_salon_bot</code>
                                     </small>
                                     <div class="invalid-feedback" id="telegram_bot_username_error"></div>
                                 </div>
@@ -520,21 +529,21 @@
                                         <button type="button" 
                                                 class="btn btn-info btn-sm" 
                                                 id="testTelegramBtn"
-                                                {{ !$company->telegram_bot_token ? 'disabled' : '' }}>
+                                                {{ !$company->telegram_bot_token || !$company->telegram_bot_username ? 'disabled' : '' }}>
                                             <i class="fas fa-paper-plane"></i>
                                             Тест
                                         </button>
                                         <button type="button" 
                                                 class="btn btn-secondary btn-sm" 
                                                 id="getBotInfoBtn"
-                                                {{ !$company->telegram_bot_token ? 'disabled' : '' }}>
+                                                {{ !$company->telegram_bot_token || !$company->telegram_bot_username ? 'disabled' : '' }}>
                                             <i class="fas fa-info"></i>
                                             Инфо
                                         </button>
                                         <button type="button" 
                                                 class="btn btn-success btn-sm" 
                                                 id="setWebhookBtn"
-                                                {{ !$company->telegram_bot_token ? 'disabled' : '' }}>
+                                                {{ !$company->telegram_bot_token || !$company->telegram_bot_username ? 'disabled' : '' }}>
                                             <i class="fas fa-link"></i>
                                             Активировать бот
                                         </button>
@@ -750,9 +759,25 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.telegramBotTokenField) {
         window.telegramBotTokenField.addEventListener('input', function() {
             const hasToken = this.value.length > 0;
-            if (window.testTelegramBtn) window.testTelegramBtn.disabled = !hasToken;
-            if (window.getBotInfoBtn) window.getBotInfoBtn.disabled = !hasToken;
-            if (window.setWebhookBtn) window.setWebhookBtn.disabled = !hasToken;
+            const hasUsername = window.telegramBotUsernameField.value.trim().length > 0;
+            const enableButtons = hasToken && hasUsername;
+            
+            if (window.testTelegramBtn) window.testTelegramBtn.disabled = !enableButtons;
+            if (window.getBotInfoBtn) window.getBotInfoBtn.disabled = !enableButtons;
+            if (window.setWebhookBtn) window.setWebhookBtn.disabled = !enableButtons;
+        });
+    }
+
+    // Отслеживание изменений username для активации/деактивации кнопок
+    if (window.telegramBotUsernameField) {
+        window.telegramBotUsernameField.addEventListener('input', function() {
+            const hasToken = window.telegramBotTokenField.value.trim().length > 0;
+            const hasUsername = this.value.trim().length > 0;
+            const enableButtons = hasToken && hasUsername;
+            
+            if (window.testTelegramBtn) window.testTelegramBtn.disabled = !enableButtons;
+            if (window.getBotInfoBtn) window.getBotInfoBtn.disabled = !enableButtons;
+            if (window.setWebhookBtn) window.setWebhookBtn.disabled = !enableButtons;
         });
     }
 
@@ -788,6 +813,42 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // ===== TELEGRAM ФУНКЦИОНАЛЬНОСТЬ =====
+    
+    // Функция для проверки полей
+    function updateTelegramButtonStates() {
+        const token = document.getElementById('telegram_bot_token').value.trim();
+        const username = document.getElementById('telegram_bot_username').value.trim();
+        const hasRequiredFields = token && username;
+        
+        const testBtn = document.getElementById('testTelegramBtn');
+        const infoBtn = document.getElementById('getBotInfoBtn');
+        const webhookBtn = document.getElementById('setWebhookBtn');
+        
+        [testBtn, infoBtn, webhookBtn].forEach(btn => {
+            if (hasRequiredFields) {
+                btn.removeAttribute('disabled');
+            } else {
+                btn.setAttribute('disabled', 'disabled');
+            }
+        });
+    }
+
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        updateTelegramButtonStates();
+        
+        // Добавляем обработчики для мониторинга изменений
+        const tokenField = document.getElementById('telegram_bot_token');
+        const usernameField = document.getElementById('telegram_bot_username');
+        
+        if (tokenField) {
+            tokenField.addEventListener('input', updateTelegramButtonStates);
+        }
+        
+        if (usernameField) {
+            usernameField.addEventListener('input', updateTelegramButtonStates);
+        }
+    });
     
 // Функция тестирования подключения Telegram
 async function testTelegramConnection() {
@@ -971,16 +1032,20 @@ function showTelegramStatus(message, type = 'info') {
 // Установка webhook для бота
 async function setWebhook() {
     const token = document.getElementById('telegram_bot_token').value.trim();
+    const username = document.getElementById('telegram_bot_username').value.trim();
     
     if (!token) {
         showAlert('Пожалуйста, введите токен бота', 'warning');
         return;
     }
     
+    if (!username) {
+        showAlert('Пожалуйста, введите имя бота (username)', 'warning');
+        return;
+    }
+
     const webhookBtn = document.getElementById('setWebhookBtn');
-    const originalText = webhookBtn.innerHTML;
-    
-    try {
+    const originalText = webhookBtn.innerHTML;    try {
         webhookBtn.disabled = true;
         webhookBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Активация...';
         

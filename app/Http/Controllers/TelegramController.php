@@ -33,11 +33,14 @@ class TelegramController extends Controller
 
         $validator = Validator::make($request->all(), [
             'telegram_bot_token' => 'nullable|string|min:40|max:50',
-            'telegram_bot_username' => 'nullable|string|max:50|regex:/^[a-zA-Z0-9_]+$/',
+            'telegram_bot_username' => 'required_with:telegram_bot_token|string|max:50|regex:/^[a-zA-Z0-9_]+$/|min:5',
             'telegram_notifications_enabled' => 'boolean',
             'telegram_chat_id' => 'nullable|string|max:50',
         ], [
             'telegram_bot_token.min' => 'Токен бота должен содержать минимум 40 символов',
+            'telegram_bot_username.required_with' => 'Укажите имя бота при вводе токена',
+            'telegram_bot_username.regex' => 'Имя бота может содержать только латинские буквы, цифры и подчеркивания',
+            'telegram_bot_username.min' => 'Имя бота должно содержать минимум 5 символов',
             'telegram_chat_id.max' => 'ID чата не должен превышать 50 символов',
         ]);
 
@@ -217,6 +220,13 @@ class TelegramController extends Controller
             ], 400);
         }
 
+        if (!$company->telegram_bot_username) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Укажите имя бота (username) в настройках для корректной работы интерактивного бронирования'
+            ], 400);
+        }
+
         try {
             // Создаем URL для webhook
             $webhookUrl = route('telegram.webhook', ['botToken' => $company->telegram_bot_token]);
@@ -255,7 +265,7 @@ class TelegramController extends Controller
                     'success' => true,
                     'message' => 'Webhook успешно установлен! Теперь бот может принимать сообщения от клиентов.',
                     'webhook_url' => $webhookUrl,
-                    'bot_username' => '@' . ($company->telegram_bot_username ?: 'неизвестно'),
+                    'bot_username' => '@' . $company->telegram_bot_username,
                     'data' => $result
                 ]);
             } else {
