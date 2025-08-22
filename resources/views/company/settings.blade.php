@@ -451,6 +451,28 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group-enhanced">
+                                    <label for="telegram_bot_username" class="form-label-enhanced">
+                                        Имя бота (username)
+                                        <span class="field-tooltip" data-tooltip="Username бота без @, например: my_salon_bot">
+                                        </span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control-enhanced" 
+                                           id="telegram_bot_username" 
+                                           name="telegram_bot_username" 
+                                           value="{{ old('telegram_bot_username', $company->telegram_bot_username) }}"
+                                           placeholder="my_salon_bot">
+                                    <small class="form-text text-muted">
+                                        Username бота (заполняется автоматически при получении информации о боте)
+                                    </small>
+                                    <div class="invalid-feedback" id="telegram_bot_username_error"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group-enhanced">
                                     <label for="telegram_chat_id" class="form-label-enhanced">
                                         ID чата для уведомлений
                                         <span class="field-tooltip" data-tooltip="ID группы или личного чата для получения уведомлений">
@@ -707,6 +729,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.getBotInfoBtn = document.getElementById('getBotInfoBtn');
     window.setWebhookBtn = document.getElementById('setWebhookBtn');
     window.telegramBotTokenField = document.getElementById('telegram_bot_token');
+    window.telegramBotUsernameField = document.getElementById('telegram_bot_username');
     window.telegramChatIdField = document.getElementById('telegram_chat_id');
     window.telegramEnabledField = document.getElementById('telegram_notifications_enabled');
     window.telegramStatus = document.getElementById('telegram_status');
@@ -831,6 +854,11 @@ async function testTelegramConnection() {
                     message += `• Описание: ${botInfo.description}<br>`;
                 }
                 showTelegramStatus(message, 'success');
+                
+                // Автоматически заполняем поле username
+                if (botInfo.username && window.telegramBotUsernameField) {
+                    window.telegramBotUsernameField.value = botInfo.username;
+                }
             } else {
                 showTelegramStatus(data.message || 'Ошибка получения информации о боте', 'error');
             }
@@ -853,6 +881,7 @@ async function saveTelegramSettings() {
         },
         body: JSON.stringify({
             telegram_bot_token: window.telegramBotTokenField.value.trim(),
+            telegram_bot_username: window.telegramBotUsernameField.value.trim(),
             telegram_chat_id: window.telegramChatIdField.value.trim(),
             telegram_notifications_enabled: window.telegramEnabledField.checked
         })
@@ -996,7 +1025,7 @@ async function setWebhook() {
 
 // Очистка ошибок валидации при изменении полей Telegram
 document.addEventListener('DOMContentLoaded', function() {
-    const telegramFields = ['telegram_bot_token', 'telegram_chat_id'];
+    const telegramFields = ['telegram_bot_token', 'telegram_bot_username', 'telegram_chat_id'];
     
     telegramFields.forEach(fieldId => {
         const field = document.getElementById(fieldId);

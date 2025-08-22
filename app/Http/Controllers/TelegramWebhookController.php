@@ -111,6 +111,12 @@ class TelegramWebhookController extends Controller
     {
         $chatId = $message['from']['id'];
         $text = $message['text'] ?? '';
+        
+        Log::info('Обработка сообщения от пользователя', [
+            'company_id' => $company->id,
+            'chat_id' => $chatId,
+            'text' => $text
+        ]);
 
         if ($text === '/start' || $text === '/book') {
             $this->showWelcomeMessage($company, $chatId);
