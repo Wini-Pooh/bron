@@ -1,0 +1,271 @@
+/* Стили для карточек записей в календаре */
+.appointment-card.owner-view {
+    position: relative;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.appointment-card.owner-view:hover {
+    background: #f1f3f4;
+    border-color: #adb5bd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.appointment-card.owner-view:hover .edit-hint {
+    opacity: 1;
+    visibility: visible;
+}
+
+.edit-hint {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #6c757d;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.edit-hint i {
+    margin-right: 4px;
+}
+
+.appointment-card .appointment-title {
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.appointment-card .appointment-client,
+.appointment-card .appointment-phone,
+.appointment-card .appointment-email {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+
+.appointment-card .appointment-client i,
+.appointment-card .appointment-phone i,
+.appointment-card .appointment-email i {
+    width: 14px;
+    margin-right: 6px;
+    color: #007bff;
+}
+
+.appointment-card .appointment-details {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.appointment-card .appointment-details span {
+    display: flex;
+    align-items: center;
+}
+
+.appointment-card .appointment-details i {
+    margin-right: 4px;
+    color: #17a2b8;
+}
+
+.appointment-card .appointment-notes {
+    background: rgba(23, 162, 184, 0.1);
+    border-left: 3px solid #17a2b8;
+    padding: 6px 8px;
+    margin: 6px 0;
+    font-size: 0.8rem;
+    border-radius: 0 4px 4px 0;
+}
+
+.appointment-card .appointment-notes i {
+    margin-right: 6px;
+    color: #17a2b8;
+}
+
+.appointment-card .appointment-status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 6px;
+}
+
+.appointment-card .appointment-status.status-pending {
+    background: rgba(108, 117, 125, 0.1);
+    color: #495057;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.appointment-card .appointment-status.status-confirmed {
+    background: rgba(108, 117, 125, 0.15);
+    color: #343a40;
+    border: 1px solid rgba(108, 117, 125, 0.4);
+}
+
+.appointment-card .appointment-status.status-cancelled {
+    background: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+.appointment-card .appointment-status.status-completed {
+    background: rgba(108, 117, 125, 0.2);
+    color: #495057;
+    border: 1px solid rgba(108, 117, 125, 0.5);
+}
+
+.booking-number {
+    background: #6c757d;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+/* Стили для модального окна редактирования */
+#editAppointmentModal .modal-dialog {
+    max-width: 800px;
+}
+
+#editAppointmentModal .card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#editAppointmentModal .card-header {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-bottom: 1px solid #dee2e6;
+    padding: 12px 16px;
+}
+
+#editAppointmentModal .card-header h6 {
+    margin: 0;
+    color: #343a40;
+    font-weight: 600;
+}
+
+#editAppointmentModal .card-body {
+    padding: 16px;
+}
+
+#editAppointmentModal .badge {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+}
+
+#editAppointmentModal .alert {
+    border-radius: 6px;
+    padding: 12px;
+}
+
+/* Улучшенные кнопки в модальном окне */
+#editAppointmentModal .modal-footer .btn {
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+}
+
+#editAppointmentModal .modal-footer .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+#editAppointmentModal .modal-footer .btn i {
+    margin-right: 6px;
+}
+
+/* Анимация появления модального окна */
+#editAppointmentModal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+    transform: translate(0, -50px);
+}
+
+#editAppointmentModal.show .modal-dialog {
+    transform: none;
+}
+
+/* Стили для счетчиков символов */
+.form-text {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-top: 4px;
+}
+
+/* Адаптивность для модального окна */
+@media (max-width: 768px) {
+    #editAppointmentModal .modal-dialog {
+        margin: 10px;
+        max-width: calc(100% - 20px);
+    }
+    
+    #editAppointmentModal .modal-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    #editAppointmentModal .modal-footer .btn {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+/* Анимация загрузки */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.loading {
+    animation: pulse 1.5s infinite;
+}
+
+/* Стили для временных слотов с записями */
+.time-content.available .available-slot:hover {
+    background: rgba(0, 123, 255, 0.1);
+    border-color: #007bff;
+}
+
+.add-more-slot .available-slot {
+    background: rgba(40, 167, 69, 0.1);
+    border: 2px dashed #28a745;
+    color: #28a745;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.add-more-slot .available-slot:hover {
+    background: rgba(40, 167, 69, 0.2);
+    transform: translateY(-1px);
+}
+
+.add-more-slot .available-slot i {
+    margin-right: 6px;
+    font-size: 0.9rem;
+}

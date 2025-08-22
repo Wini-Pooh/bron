@@ -1,0 +1,703 @@
+/* Стили для страницы настроек компании */
+
+/* Основные переменные цветов */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --border-radius: 12px;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s ease;
+}
+
+/* Улучшенные карточки настроек */
+.settings-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.settings-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.settings-card-header {
+    background: linear-gradient(135deg, #b5b5b5, #a3a3a3);
+    color: white;
+    padding: 1.25rem 1.5rem;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.settings-card-header i {
+    margin-right: 0.75rem;
+    font-size: 1.2rem;
+}
+
+.settings-card-body {
+    padding: 1.5rem;
+}
+
+/* Улучшенные группы полей */
+.form-group-enhanced {
+    margin-bottom: 1.5rem;
+}
+
+.form-label-enhanced {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    display: block;
+    font-size: 0.95rem;
+}
+
+.form-control-enhanced {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    background-color: #fff;
+    width: 100%;
+}
+
+.form-control-enhanced:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    background-color: #fff;
+    outline: none;
+}
+
+.form-control-enhanced.is-invalid {
+    border-color: var(--danger-color);
+}
+
+.form-control-enhanced.is-valid {
+    border-color: var(--success-color);
+}
+
+/* Стили для чекбоксов */
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.checkbox-item {
+    background: var(--light-color);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 2px solid transparent;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.checkbox-item:hover {
+    background: #e9ecef;
+    border-color: var(--primary-color);
+}
+
+.checkbox-item.active {
+    background: rgba(0, 123, 255, 0.1);
+    border-color: var(--primary-color);
+}
+
+.checkbox-item .form-check-input {
+    display: none;
+}
+
+.checkbox-item .form-check-label {
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--dark-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-item .form-check-label::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid #dee2e6;
+    border-radius: 4px;
+    margin-right: 0.75rem;
+    display: inline-block;
+    transition: var(--transition);
+}
+
+.checkbox-item.active .form-check-label::before {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Стили для переключателей */
+.switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--light-color);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: var(--transition);
+    border-radius: 34px;
+}
+
+.switch-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: var(--transition);
+    border-radius: 50%;
+}
+
+.switch input:checked + .switch-slider {
+    background-color: var(--primary-color);
+}
+
+.switch input:checked + .switch-slider:before {
+    transform: translateX(26px);
+}
+
+/* Предпросмотр настроек */
+.settings-preview {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.preview-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.preview-item:last-child {
+    border-bottom: none;
+}
+
+.preview-label {
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+.preview-value {
+    font-weight: 500;
+    color: var(--secondary-color);
+}
+
+/* Кнопки */
+.btn-enhanced {
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.btn-primary-enhanced {
+    background: linear-gradient(135deg, var(--primary-color), #0056b3);
+    color: white;
+}
+
+.btn-primary-enhanced:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-secondary-enhanced {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.btn-secondary-enhanced:hover {
+    background: #545b62;
+    transform: translateY(-1px);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-success-enhanced {
+    background: linear-gradient(135deg, var(--success-color), #1e7e34);
+    color: white;
+}
+
+.btn-success-enhanced:hover {
+    background: linear-gradient(135deg, #1e7e34, #155724);
+    transform: translateY(-1px);
+    color: white;
+    text-decoration: none;
+}
+
+/* Spinner для кнопки загрузки */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Анимации */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .settings-card-header {
+        padding: 1rem;
+        font-size: 1rem;
+    }
+    
+    .settings-card-body {
+        padding: 1rem;
+    }
+    
+    .checkbox-group {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn-enhanced {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Стили для полей времени */
+.time-input-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 576px) {
+    .time-input-group {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+.time-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.5rem;
+    transition: var(--transition);
+}
+
+.time-input-wrapper:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.time-input-wrapper.is-invalid {
+    border-color: var(--danger-color);
+}
+
+.time-input-wrapper::before {
+    content: '\f017'; /* Font Awesome clock icon */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: var(--primary-color);
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+    min-width: 20px;
+    text-align: center;
+}
+
+.time-input {
+    border: none;
+    background: transparent;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--dark-color);
+    width: 100%;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+}
+
+.time-input::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+    opacity: 0;
+}
+
+.time-input::-webkit-inner-spin-button,
+.time-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Дополнительные стили для мобильных устройств */
+@media (max-width: 768px) {
+    .time-input {
+        font-size: 16px; /* Предотвращает зум на iOS */
+        padding: 0.75rem 0;
+    }
+    
+    .time-input-wrapper {
+        padding: 0.75rem;
+        min-height: 50px;
+    }
+    
+    .time-input-wrapper::before {
+        font-size: 1.3rem;
+        margin-right: 1rem;
+    }
+}
+
+/* Стили для числовых полей */
+.number-input-wrapper {
+    position: relative;
+}
+
+.number-input-wrapper::after {
+    content: attr(data-suffix);
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+/* Тултипы для полей */
+.field-tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 0.5rem;
+    cursor: help;
+}
+
+.field-tooltip::before {
+    content: '?';
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--info-color);
+    color: white;
+    text-align: center;
+    font-size: 0.8rem;
+    line-height: 18px;
+}
+
+.field-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--dark-color);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    z-index: 1000;
+}
+
+.field-tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Стили для уведомлений */
+.alert-enhanced {
+    border-radius: var(--border-radius);
+    border: none;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.alert-success-enhanced {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
+    color: #155724;
+    border-left: 4px solid var(--success-color);
+}
+
+.alert-danger-enhanced {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.05));
+    color: #721c24;
+    border-left: 4px solid var(--danger-color);
+}
+
+.alert-warning-enhanced {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    color: #856404;
+    border-left: 4px solid var(--warning-color);
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.alert-enhanced {
+    display: flex;
+    align-items: center;
+}
+
+.alert-enhanced i {
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+}
+
+/* Стили для валидации */
+.invalid-feedback-enhanced {
+    display: block;
+    color: var(--danger-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+.valid-feedback-enhanced {
+    display: block;
+    color: var(--success-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+/* Стили для групп кнопок */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 576px) {
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .button-group .btn-enhanced {
+        width: 100%;
+    }
+}
+
+/* Дополнительные стили для flatpickr */
+.flatpickr-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z'/%3E%3Cpath d='M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 16px 16px !important;
+    padding-right: 2.5rem !important;
+}
+
+/* Стили для Flatpickr time picker */
+.flatpickr-time {
+    background: white;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+}
+
+.flatpickr-time input {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    background: transparent;
+    border: none;
+    text-align: center;
+}
+
+.flatpickr-time .flatpickr-time-separator {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.flatpickr-time .arrowUp,
+.flatpickr-time .arrowDown {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.flatpickr-time .arrowUp:hover,
+.flatpickr-time .arrowDown:hover {
+    background: #0056b3;
+    transform: scale(1.1);
+}
+
+/* Анимация появления picker'а */
+.flatpickr-calendar {
+    animation: fadeInUp 0.3s ease;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Стили для полей времени с иконками */
+.time-input-wrapper .flatpickr-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z'/%3E%3Cpath d='M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z'/%3E%3C/svg%3E") !important;
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+}
+
+.time-input-wrapper::before {
+    content: '🕐';
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+/* Стили для Flatpickr time picker */
+.flatpickr-time {
+    background: white;
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+}
+
+.flatpickr-time input {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dark-color);
+    background: transparent;
+    border: none;
+    text-align: center;
+}
+
+.flatpickr-time .flatpickr-time-separator {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.flatpickr-time .arrowUp,
+.flatpickr-time .arrowDown {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.flatpickr-time .arrowUp:hover,
+.flatpickr-time .arrowDown:hover {
+    background: #0056b3;
+    transform: scale(1.1);
+}
+
+/* Анимация появления picker'а */
+.flatpickr-calendar {
+    animation: fadeInUp 0.3s ease;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Стили для полей времени с иконками */
+.time-input-wrapper .flatpickr-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z'/%3E%3Cpath d='M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z'/%3E%3C/svg%3E") !important;
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+}
+
+.time-input-wrapper::before {
+    content: '🕐';
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    font-size: 1.1rem;
+    pointer-events: none;
+}
