@@ -156,9 +156,20 @@ class TelegramController extends Controller
             $botInfo = $this->telegramService->getBotInfo($company);
             
             if ($botInfo) {
+                // Автоматически сохраняем username если он есть
+                if (isset($botInfo['username']) && !$company->telegram_bot_username) {
+                    $company->telegram_bot_username = $botInfo['username'];
+                    $company->save();
+                    
+                    \Illuminate\Support\Facades\Log::info('Username бота автоматически сохранен из getBotInfo', [
+                        'company_id' => $company->id,
+                        'bot_username' => $botInfo['username']
+                    ]);
+                }
+                
                 return response()->json([
                     'success' => true,
-                    'data' => $botInfo
+                    'bot_info' => $botInfo
                 ]);
             } else {
                 return response()->json([
@@ -212,6 +223,30 @@ class TelegramController extends Controller
             
             // Создаем экземпляр TelegramBotService
             $botService = app(\App\Services\TelegramBotService::class);
+            
+            // Сначала получаем информацию о боте для обновления username
+            try {
+                $botInfoUrl = "https://api.telegram.org/bot{$company->telegram_bot_token}/getMe";
+                $botInfoResponse = \Illuminate\Support\Facades\Http::get($botInfoUrl);
+                
+                if ($botInfoResponse->successful()) {
+                    $botData = $botInfoResponse->json();
+                    if ($botData['ok'] && isset($botData['result']['username'])) {
+                        $company->telegram_bot_username = $botData['result']['username'];
+                        $company->save();
+                        
+                        \Illuminate\Support\Facades\Log::info('Username бота обновлен', [
+                            'company_id' => $company->id,
+                            'bot_username' => $botData['result']['username']
+                        ]);
+                    }
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning('Не удалось получить информацию о боте для обновления username', [
+                    'company_id' => $company->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
             
             $result = $botService->setWebhook($company, $webhookUrl);
             

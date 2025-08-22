@@ -812,8 +812,8 @@ async function testTelegramConnection() {
     
     // Функция получения информации о боте
     async function getBotInfo() {
-        getBotInfoBtn.disabled = true;
-        getBotInfoBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Загрузка...';
+        window.getBotInfoBtn.disabled = true;
+        window.getBotInfoBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Загрузка...';
         
         try {
             // Сначала сохраняем настройки
@@ -823,17 +823,23 @@ async function testTelegramConnection() {
             const data = await response.json();
             
             if (data.success) {
-                const botInfo = data.data;
-                showTelegramStatus(`Бот: @${botInfo.username} (${botInfo.first_name})`, 'success');
+                const botInfo = data.bot_info;
+                let message = `<strong>Информация о боте:</strong><br>`;
+                message += `• Имя: ${botInfo.first_name}<br>`;
+                message += `• Username: @${botInfo.username}<br>`;
+                if (botInfo.description) {
+                    message += `• Описание: ${botInfo.description}<br>`;
+                }
+                showTelegramStatus(message, 'success');
             } else {
-                showTelegramStatus(data.message || 'Не удалось получить информацию о боте', 'error');
+                showTelegramStatus(data.message || 'Ошибка получения информации о боте', 'error');
             }
         } catch (error) {
-            showTelegramStatus('Произошла ошибка при получении информации о боте', 'error');
+            showTelegramStatus('Произошла ошибка при получении информации', 'error');
             console.error('Ошибка получения информации о боте:', error);
         } finally {
-            getBotInfoBtn.disabled = false;
-            getBotInfoBtn.innerHTML = '<i class="fas fa-info"></i> Инфо';
+            window.getBotInfoBtn.disabled = false;
+            window.getBotInfoBtn.innerHTML = '<i class="fas fa-info"></i> Инфо';
         }
     }
     
@@ -949,9 +955,6 @@ async function setWebhook() {
         webhookBtn.disabled = true;
         webhookBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Активация...';
         
-        console.log('Отправляем запрос на:', `/company/{{ $company->slug }}/telegram/webhook`);
-        console.log('CSRF Token:', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-        
         const response = await fetch(`/company/{{ $company->slug }}/telegram/webhook`, {
             method: 'POST',
             headers: {
@@ -960,11 +963,7 @@ async function setWebhook() {
             }
         });
         
-        console.log('Response status:', response.status);
-        console.log('Response headers:', response.headers);
-        
         const result = await response.json();
-        console.log('Response data:', result);
         
         if (result.success) {
             let message = '✅ Бот успешно активирован!\n\n';

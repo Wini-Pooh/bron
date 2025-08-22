@@ -18,7 +18,7 @@ use App\Http\Controllers\TelegramWebhookController;
 */
 
 Route::get('/', function () {
-    return view('/home');
+    return redirect('/home');
 });
 
 Auth::routes();
