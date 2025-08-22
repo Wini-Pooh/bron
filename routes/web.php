@@ -67,6 +67,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/company/{slug}/telegram/webhook', [TelegramController::class, 'setWebhook'])->name('company.telegram.webhook');
     Route::get('/company/{slug}/telegram/webhook-info', [TelegramController::class, 'getWebhookInfo'])->name('company.telegram.webhook-info');
 });
-
+if (app()->environment('production')) {
+    URL::forceScheme('https');
+}
 // Публичный маршрут для Telegram webhook (без middleware auth)
 Route::post('/telegram/webhook/{botToken}', [TelegramWebhookController::class, 'handle'])->name('telegram.webhook');

@@ -278,10 +278,19 @@ class TelegramBotService
     public function setWebhook($company, $webhookUrl)
     {
         if (!$company->telegram_bot_token) {
+            Log::error('Попытка установить webhook без токена', [
+                'company_id' => $company->id
+            ]);
             return false;
         }
 
         $url = "https://api.telegram.org/bot{$company->telegram_bot_token}/setWebhook";
+        
+        Log::info('Установка webhook', [
+            'company_id' => $company->id,
+            'webhook_url' => $webhookUrl,
+            'api_url' => $url
+        ]);
         
         try {
             $response = Http::post($url, [
@@ -289,11 +298,21 @@ class TelegramBotService
                 'allowed_updates' => ['message', 'callback_query']
             ]);
             
-            return $response->successful() ? $response->json() : false;
+            $result = $response->json();
+            
+            Log::info('Ответ от Telegram API при установке webhook', [
+                'company_id' => $company->id,
+                'status' => $response->status(),
+                'successful' => $response->successful(),
+                'response' => $result
+            ]);
+            
+            return $response->successful() ? $result : false;
         } catch (\Exception $e) {
             Log::error('Ошибка установки webhook', [
+                'company_id' => $company->id,
                 'error' => $e->getMessage(),
-                'url' => $webhookUrl
+                'webhook_url' => $webhookUrl
             ]);
             return false;
         }

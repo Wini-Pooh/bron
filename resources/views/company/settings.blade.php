@@ -547,6 +547,13 @@
                                             <i class="fas fa-link"></i>
                                             Активировать бот
                                         </button>
+                                        <button type="button" 
+                                                class="btn btn-warning btn-sm" 
+                                                id="getWebhookInfoBtn"
+                                                {{ !$company->telegram_bot_token || !$company->telegram_bot_username ? 'disabled' : '' }}>
+                                            <i class="fas fa-info-circle"></i>
+                                            Статус webhook
+                                        </button>
                                     </div>
                                     <div id="telegram_status" class="mt-2"></div>
                                     <small class="form-text text-muted">
@@ -755,6 +762,11 @@ document.addEventListener('DOMContentLoaded', function() {
         window.setWebhookBtn.addEventListener('click', setWebhook);
     }
     
+    window.getWebhookInfoBtn = document.getElementById('getWebhookInfoBtn');
+    if (window.getWebhookInfoBtn) {
+        window.getWebhookInfoBtn.addEventListener('click', getWebhookInfo);
+    }
+    
     // Отслеживание изменений токена для активации/деактивации кнопок
     if (window.telegramBotTokenField) {
         window.telegramBotTokenField.addEventListener('input', function() {
@@ -823,8 +835,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const testBtn = document.getElementById('testTelegramBtn');
         const infoBtn = document.getElementById('getBotInfoBtn');
         const webhookBtn = document.getElementById('setWebhookBtn');
+        const webhookInfoBtn = document.getElementById('getWebhookInfoBtn');
         
-        [testBtn, infoBtn, webhookBtn].forEach(btn => {
+        [testBtn, infoBtn, webhookBtn, webhookInfoBtn].forEach(btn => {
             if (hasRequiredFields) {
                 btn.removeAttribute('disabled');
             } else {
@@ -1029,6 +1042,62 @@ function showTelegramStatus(message, type = 'info') {
 
 // ===== TELEGRAM ФУНКЦИИ =====
 
+// Получение информации о webhook
+async function getWebhookInfo() {
+    const webhookInfoBtn = document.getElementById('getWebhookInfoBtn');
+    const originalText = webhookInfoBtn.innerHTML;
+    
+    try {
+        webhookInfoBtn.disabled = true;
+        webhookInfoBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Проверка...';
+        
+        const response = await fetch(`/company/{{ $company->slug }}/telegram/webhook-info`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+            const info = result.data;
+            let message = '📊 Статус Webhook:\n\n';
+            
+            if (info.url) {
+                message += `✅ Webhook активен\n`;
+                message += `🔗 URL: ${info.url}\n`;
+                message += `📈 Ожидающих обновлений: ${info.pending_update_count || 0}\n`;
+                
+                if (info.last_error_date) {
+                    message += `❌ Последняя ошибка: ${new Date(info.last_error_date * 1000).toLocaleString()}\n`;
+                    message += `📝 Сообщение: ${info.last_error_message || 'Неизвестная ошибка'}\n`;
+                } else {
+                    message += `✅ Ошибок нет\n`;
+                }
+                
+                if (info.allowed_updates && info.allowed_updates.length > 0) {
+                    message += `📋 Отслеживаемые события: ${info.allowed_updates.join(', ')}\n`;
+                }
+            } else {
+                message += `❌ Webhook не установлен\n`;
+                message += `💡 Нажмите "Активировать бот" для установки webhook`;
+            }
+            
+            showTelegramStatus(message, info.url ? 'success' : 'warning');
+        } else {
+            showTelegramStatus(result.message || 'Не удалось получить информацию о webhook', 'error');
+        }
+    } catch (error) {
+        showTelegramStatus('Произошла ошибка при получении информации о webhook', 'error');
+        console.error('Ошибка получения информации о webhook:', error);
+    } finally {
+        webhookInfoBtn.disabled = false;
+        webhookInfoBtn.innerHTML = originalText;
+    }
+}
+
 // Установка webhook для бота
 async function setWebhook() {
     const token = document.getElementById('telegram_bot_token').value.trim();
@@ -1085,6 +1154,62 @@ async function setWebhook() {
         showAlert('Произошла ошибка при активации бота', 'danger');
         webhookBtn.disabled = false;
         webhookBtn.innerHTML = originalText;
+    }
+}
+
+// Получение информации о webhook
+async function getWebhookInfo() {
+    const btn = document.getElementById('getWebhookInfoBtn');
+    const originalText = btn.innerHTML;
+    
+    try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Проверка...';
+        
+        const response = await fetch(`{{ route('company.telegram.webhook-info', $company->slug) }}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        });
+        
+        const result = await response.json();
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        
+        if (result.success && result.data) {
+            const info = result.data;
+            let message = '📊 Информация о webhook:\n\n';
+            
+            if (info.url) {
+                message += `🔗 URL: ${info.url}\n`;
+                message += `✅ Статус: Активен\n`;
+                message += `📅 Последнее обновление: ${info.last_error_date ? new Date(info.last_error_date * 1000).toLocaleString() : 'Нет данных'}\n`;
+                
+                if (info.pending_update_count > 0) {
+                    message += `⏳ Ожидающих обновлений: ${info.pending_update_count}\n`;
+                }
+                
+                if (info.last_error_message) {
+                    message += `⚠️ Последняя ошибка: ${info.last_error_message}\n`;
+                }
+                
+                message += `\n✅ Webhook настроен и работает!`;
+                showAlert(message, 'success');
+            } else {
+                message += '❌ Webhook не установлен\n';
+                message += '💡 Нажмите "Активировать бот" для установки webhook';
+                showAlert(message, 'warning');
+            }
+        } else {
+            showAlert(`❌ Ошибка получения информации: ${result.message}`, 'danger');
+        }
+    } catch (error) {
+        console.error('Ошибка получения информации о webhook:', error);
+        showAlert('Произошла ошибка при получении информации о webhook', 'danger');
+        btn.disabled = false;
+        btn.innerHTML = originalText;
     }
 }
 
